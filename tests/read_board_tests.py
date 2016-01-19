@@ -1,9 +1,27 @@
-from nose.tools import assert_in, eq_
+from nose.tools import assert_in, assert_raises_regexp, eq_
 
 from rushhour.board import _car_from_positions
 from rushhour.board import board_from_string
 from rushhour.board import Car
 from rushhour.board import Direction
+from rushhour.board import InvalidCarError
+
+
+def test_construct_too_small_car():
+    with assert_raises_regexp(InvalidCarError, ".*more than 1 block.*"):
+        _car_from_positions('r', {})
+    with assert_raises_regexp(InvalidCarError, ".*more than 1 block.*"):
+        _car_from_positions('r', {(0, 0)})
+
+
+def test_construct_car_that_extends_beyond_one_line():
+    with assert_raises_regexp(InvalidCarError, ".*1 row.*1 column.*"):
+        _car_from_positions('r', {(0, 0), (1, 0), (0, 1)})
+
+
+def test_construct_car_with_gaps():
+    with assert_raises_regexp(InvalidCarError, ".*gaps.*"):
+        _car_from_positions('r', {(0, 0), (0, 2)})
 
 
 def test_car_from_horizontal_positions1():
