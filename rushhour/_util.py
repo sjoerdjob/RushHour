@@ -34,6 +34,8 @@ class TransposedView(object):
             self._idx = idx
 
         def __getitem__(self, idx):
+            if isinstance(idx, slice):
+                return [row[self._idx] for row in self._grid[idx]]
             return self._grid[idx][self._idx]
 
         def __setitem__(self, idx, val):
