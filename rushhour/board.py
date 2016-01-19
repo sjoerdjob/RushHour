@@ -8,9 +8,19 @@ class InvalidCarError(Exception): pass
 class Board(object):
     def __init__(self, positions_and_cars):
         self.cars = []
-        for position, car in positions_and_cars:
+        self._board = [[None] * 6 for __ in range(6)]
+        self._positions_by_car = {}
+        for (pos_x, pos_y), car in positions_and_cars:
             self.cars.append(car)
+            self._positions_by_car[car] = (pos_x, pos_y)
+            for idx in range(car.length):
+                if car.orientation == Car.VERTICAL:
+                    self._board[pos_x][pos_y + idx] = car
+                else:
+                    self._board[pos_x + idx][pos_y] = car
 
+    def car_at_position(self, pos_x, pos_y):
+        return self._board[pos_x][pos_y]
 
 class Car(object):
     __slots__ = ('color', 'orientation', 'length')

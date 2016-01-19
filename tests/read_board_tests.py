@@ -83,3 +83,19 @@ GGHHEF
     assert_in(Car('H', Car.HORIZONTAL, 2), board.cars)
     assert_in(Car('I', Car.VERTICAL, 2), board.cars)
     assert_in(Car('J', Car.HORIZONTAL, 2), board.cars)
+
+
+def test_get_car_at_position():
+    board_description = """\
+....AA
+..BBCC
+rr..EF
+GGHHEF
+...IEF
+...IJJ
+"""
+
+    board = board_from_string(board_description)
+    eq_(board.car_at_position(1, 2).color, 'r')
+    eq_(board.car_at_position(4, 3).color, 'E')
+    eq_(board.car_at_position(5, 5).color, 'J')
