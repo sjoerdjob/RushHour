@@ -2,7 +2,7 @@ from collections import defaultdict
 from enum import Enum
 from operator import itemgetter
 
-from rushhour._util import SlottedDefaults
+from rushhour._util import SlottedDefaults, TransposedView
 
 
 class InvalidCarError(Exception): pass
@@ -39,14 +39,45 @@ class Board(object):
         if car.orientation != direction:
             raise InvalidMoveError("Moving a car to the side? Please don't!")
 
-        # TODO: Check for obstacles along the way, going out-of-bounds, etc.
-
-        self._blit(pos_x, pos_y, car.width, car.height, None)
         if direction == Direction.horizontal:
-            pos_x += count
+            pos, path = pos_x, self._board[pos_y]
+        elif direction == Direction.vertical:
+            pos, path = pos_y, TransposedView(self._board)[pos_x]
         else:
-            pos_y += count
-        self._blit(pos_x, pos_y, car.width, car.height, car)
+            raise ValueError("Invalid direction supplied.")
+
+        if pos + count < 0 or pos + count + car.length > 6:
+            # Yes, maybe the red car should be allowed to move outside the
+            # board. However, an equivalent solution is to mark the game as won
+            # as soon as the red car touches the right side of the board.
+            raise InvalidMoveError("Car would go out of bounds")
+
+        if count < 0:
+            check_range = range(pos + count, pos)
+        else:
+            check_range = range(pos + car.length, pos + car.length + count)
+
+        for idx in check_range:
+            if path[idx] is not None:
+                raise InvalidMoveError("Car would bump into other car.")
+
+        for idx in range(pos, pos + car.length):
+            path[idx] = None
+
+        pos += count
+        for idx in range(pos, pos + car.length):
+            path[idx] = car
+
+        if direction == Direction.horizontal:
+            self._positions_by_car[car] = pos_x + count, pos_y
+        elif direction == Direction.vertical:
+            self._positions_by_car[car] = pos_x, pos_y + count
+
+    def __str__(self):
+        return ''.join(
+            ''.join(car.color if car else '.' for car in row) + "\n"
+            for row in self._board
+        )
 
 
 class Car(SlottedDefaults):

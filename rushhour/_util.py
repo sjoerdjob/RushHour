@@ -16,3 +16,23 @@ class SlottedDefaults(object):
 
     def __hash__(self):
         return hash(tuple(getattr(self, slot) for slot in self.__slots__))
+
+class TransposedView(object):
+    """Represents a transposed view of a list of lists."""
+
+    class _Column(object):
+        def __init__(self, grid, idx):
+            self._grid = grid
+            self._idx = idx
+
+        def __getitem__(self, idx):
+            return self._grid[idx][self._idx]
+
+        def __setitem__(self, idx, val):
+            self._grid[idx][self._idx] = val
+
+    def __init__(self, grid):
+        self._grid = grid
+
+    def __getitem__(self, idx):
+        return self._Column(self._grid, idx)
