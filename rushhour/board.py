@@ -14,6 +14,11 @@ class Direction(Enum):
 
 
 class Board(object):
+    def _blit(self, left, top, width, height, value):
+        for offset_x in range(width):
+            for offset_y in range(height):
+                self._board[left + offset_x][top + offset_y] = value
+
     def __init__(self, positions_and_cars):
         self.cars = []
         self._board = [[None] * 6 for __ in range(6)]
@@ -21,11 +26,7 @@ class Board(object):
         for (pos_x, pos_y), car in positions_and_cars:
             self.cars.append(car)
             self._positions_by_car[car] = (pos_x, pos_y)
-            for idx in range(car.length):
-                if car.orientation == Direction.vertical:
-                    self._board[pos_x][pos_y + idx] = car
-                else:
-                    self._board[pos_x + idx][pos_y] = car
+            self._blit(pos_x, pos_y, car.width, car.height, car)
 
     def car_at_position(self, pos_x, pos_y):
         return self._board[pos_x][pos_y]
@@ -37,6 +38,14 @@ class Car(SlottedDefaults):
         self.color = color
         self.orientation = orientation
         self.length = length
+
+    @property
+    def width(self):
+        return self.length if self.orientation == Direction.horizontal else 1
+
+    @property
+    def height(self):
+        return self.length if self.orientation == Direction.vertical else 1
 
 
 def _car_from_positions(color, positions):
