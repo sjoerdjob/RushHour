@@ -80,6 +80,37 @@ class Board(object):
         elif direction == Direction.vertical:
             self._positions_by_car[car] = pos_x, pos_y + count
 
+    @staticmethod
+    def __count_prefix_nones(lst):
+        for idx, val in enumerate(lst):
+            if val is not None:
+                return idx
+        return len(lst)
+
+    def get_moves(self):
+        """
+        Enumerates all possible moves at the current board.
+
+        The return value will be a list of cars, directions, and min/max count.
+        """
+        moves = set()
+        for car, position in self._positions_by_car.items():
+            pos_x, pos_y = position
+            if car.orientation == Direction.horizontal:
+                path = self._board[pos_y]
+                pos = pos_x
+            else:
+                path = TransposedView(self._board)[pos_x]
+                pos = pos_y
+
+            min_step = -self.__count_prefix_nones(list(reversed(path[0:pos])))
+            max_step = self.__count_prefix_nones(path[pos + car.length:])
+            for step in range(min_step, max_step + 1):
+                if step != 0:
+                    moves.add((car, car.orientation, step))
+
+        return moves
+
     def __str__(self):
         return ''.join(
             ''.join(car.color if car else '.' for car in row) + "\n"
