@@ -1,5 +1,12 @@
+"""
+Utility functions and classes for the RushHour project.
+"""
+
+
 class SlottedDefaults(object):
     """Provides default implementation for some methods based on slots."""
+    __slots__ = ()
+
     def __eq__(self, other):
         if self.__class__ != other.__class__:
             return False
@@ -16,6 +23,7 @@ class SlottedDefaults(object):
 
     def __hash__(self):
         return hash(tuple(getattr(self, slot) for slot in self.__slots__))
+
 
 class TransposedView(object):
     """Represents a transposed view of a list of lists."""

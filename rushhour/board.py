@@ -1,12 +1,19 @@
+"""
+Logic representing the board + pieces.
+"""
+
 from collections import defaultdict
 from enum import Enum
-from operator import itemgetter
 
 from rushhour._util import SlottedDefaults, TransposedView
 
 
-class InvalidCarError(Exception): pass
-class InvalidMoveError(Exception): pass
+class InvalidCarError(Exception):
+    pass
+
+
+class InvalidMoveError(Exception):
+    pass
 
 
 class Direction(Enum):
@@ -101,8 +108,8 @@ def _car_from_positions(color, positions):
     if len(positions) <= 1:
         raise InvalidCarError("Cars should exist of more than 1 block")
 
-    x_positions = list(map(itemgetter(0), positions))
-    y_positions = list(map(itemgetter(1), positions))
+    x_positions = [position[0] for position in positions]
+    y_positions = [position[1] for position in positions]
 
     left, right = min(x_positions), max(x_positions)
     top, bottom = min(y_positions), max(y_positions)
