@@ -6,6 +6,7 @@ from rushhour._util import SlottedDefaults
 
 
 class InvalidCarError(Exception): pass
+class InvalidMoveError(Exception): pass
 
 
 class Direction(Enum):
@@ -30,6 +31,23 @@ class Board(object):
 
     def car_at_position(self, pos_x, pos_y):
         return self._board[pos_x][pos_y]
+
+    def move(self, car, direction, count):
+        assert car in self.cars
+        pos_x, pos_y = self._positions_by_car[car]
+
+        if car.orientation != direction:
+            raise InvalidMoveError("Moving a car to the side? Please don't!")
+
+        # TODO: Check for obstacles along the way, going out-of-bounds, etc.
+
+        self._blit(pos_x, pos_y, car.width, car.height, None)
+        if direction == Direction.horizontal:
+            pos_x += count
+        else:
+            pos_y += count
+        self._blit(pos_x, pos_y, car.width, car.height, car)
+
 
 class Car(SlottedDefaults):
     __slots__ = ('color', 'orientation', 'length')
