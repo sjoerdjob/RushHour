@@ -18,7 +18,7 @@ class Board(object):
     def _blit(self, left, top, width, height, value):
         for offset_x in range(width):
             for offset_y in range(height):
-                self._board[left + offset_x][top + offset_y] = value
+                self._board[top + offset_y][left + offset_x] = value
 
     def __init__(self, positions_and_cars):
         self.cars = []
@@ -30,7 +30,7 @@ class Board(object):
             self._blit(pos_x, pos_y, car.width, car.height, car)
 
     def car_at_position(self, pos_x, pos_y):
-        return self._board[pos_x][pos_y]
+        return self._board[pos_y][pos_x]
 
     def move(self, car, direction, count):
         assert car in self.cars
@@ -73,8 +73,8 @@ def _car_from_positions(color, positions):
     x_positions = list(map(itemgetter(0), positions))
     y_positions = list(map(itemgetter(1), positions))
 
-    top, bottom = min(y_positions), max(y_positions)
     left, right = min(x_positions), max(x_positions)
+    top, bottom = min(y_positions), max(y_positions)
 
     if top == bottom:
         orientation = Direction.horizontal
