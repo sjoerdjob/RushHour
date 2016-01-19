@@ -1,8 +1,14 @@
 from collections import defaultdict
+from enum import Enum
 from operator import itemgetter
 
 
 class InvalidCarError(Exception): pass
+
+
+class Direction(Enum):
+    horizontal = 'horizontal'
+    vertical = 'vertical'
 
 
 class Board(object):
@@ -14,7 +20,7 @@ class Board(object):
             self.cars.append(car)
             self._positions_by_car[car] = (pos_x, pos_y)
             for idx in range(car.length):
-                if car.orientation == Car.VERTICAL:
+                if car.orientation == Direction.vertical:
                     self._board[pos_x][pos_y + idx] = car
                 else:
                     self._board[pos_x + idx][pos_y] = car
@@ -24,9 +30,6 @@ class Board(object):
 
 class Car(object):
     __slots__ = ('color', 'orientation', 'length')
-
-    HORIZONTAL = 'horizontal'
-    VERTICAL = 'vertical'
 
     def __init__(self, color, orientation, length):
         self.color = color
@@ -59,10 +62,10 @@ def _car_from_positions(color, positions):
     left, right = min(x_positions), max(x_positions)
 
     if top == bottom:
-        orientation = Car.HORIZONTAL
+        orientation = Direction.horizontal
         size = right - left + 1
     elif left == right:
-        orientation = Car.VERTICAL
+        orientation = Direction.vertical
         size = bottom - top + 1
     else:
         raise InvalidCarError("Car should only cover 1 row or 1 column")
