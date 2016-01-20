@@ -1,5 +1,4 @@
 from collections import deque
-import pickle
 
 
 # Solver design.
@@ -28,7 +27,7 @@ class ImmutableBoard(object):
     def move(self, car, direction, count):
         # This is overkill, we do not need to clone everything, just the
         # important parts.
-        clone = pickle.loads(pickle.dumps(self._board))
+        clone = self._board.copy()
         clone.move(car, direction, count)
         return ImmutableBoard(clone)
 

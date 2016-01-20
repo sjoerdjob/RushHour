@@ -36,6 +36,13 @@ class Board(object):
             self._positions_by_car[car] = (pos_x, pos_y)
             self._blit(pos_x, pos_y, car.width, car.height, car)
 
+    def copy(self):
+        board = Board.__new__(Board)
+        board.cars = self.cars[:]
+        board._board = [row[:] for row in self._board]
+        board._positions_by_car = self._positions_by_car.copy()
+        return board
+
     def car_at_position(self, pos_x, pos_y):
         return self._board[pos_y][pos_x]
 
