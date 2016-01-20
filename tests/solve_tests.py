@@ -83,3 +83,23 @@ def test_solve_many_boards():
 
     for lvl, board_desc, num_moves in cases:
         yield _check, lvl, board_desc, num_moves
+
+
+def test_hardest_board():
+    # According to http://www.ulb.ac.be/di/algo/secollet/papers/crs06.pdf,
+    # this is actually the hardest composition.
+    # It is supposed to take 93 steps, but the solver solves it in 49. This is
+    # due to a counting-difference in how slides across multiple squares is
+    # counted (red car, 4 to the left can be counted as either 1 or 4 steps).
+    board = board_from_string("""\
+AAABCD
+EFFBCD
+E.rrCD
+HHI...
+.JI.KK
+.JLLMM
+""")
+
+    moves = solve(board)
+    ok_(_check_solves(board, moves))
+    eq_(len(moves), 49)
