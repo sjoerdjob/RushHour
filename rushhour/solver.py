@@ -30,6 +30,8 @@ class ImmutableBoard(object):
         clone = self._board.copy()
         clone.move(car, direction, count)
         return ImmutableBoard(clone)
+    def get_state(self):
+        return self._board.get_state()
 
 
 def solve(board):
@@ -38,9 +40,7 @@ def solve(board):
     if board.is_victory():
         return []
 
-    freeze = str  # Get an immutable description of state.
-
-    seen = set(freeze(board))
+    seen = set(board.get_state())
     stack = deque([(board, ())])
 
     while stack:
@@ -51,7 +51,7 @@ def solve(board):
             if new_state.is_victory():
                 return list(new_path)
 
-            frozen = freeze(new_state)
+            frozen = new_state.get_state()
             if frozen in seen:
                 continue
             seen.add(frozen)

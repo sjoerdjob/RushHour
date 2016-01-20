@@ -128,6 +128,11 @@ class Board(object):
         car_next_to_finish = self.car_at_position(5, 2)
         return car_next_to_finish and car_next_to_finish.color == 'r'
 
+    def get_state(self):
+        return tuple(
+            car.color if car else '.' for row in self._board for car in row
+        )
+
 
 class Car(SlottedDefaults):
     __slots__ = ('color', 'orientation', 'length')
