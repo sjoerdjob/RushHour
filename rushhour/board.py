@@ -117,6 +117,10 @@ class Board(object):
             for row in self._board
         )
 
+    def is_victory(self):
+        car_next_to_finish = self.car_at_position(5, 2)
+        return car_next_to_finish and car_next_to_finish.color == 'r'
+
 
 class Car(SlottedDefaults):
     __slots__ = ('color', 'orientation', 'length')
