@@ -16,22 +16,12 @@ from collections import deque
 class ImmutableBoard(object):
     def __init__(self, board):
         self._board = board
-    def get_moves(self):
-        return self._board.get_moves()
-    def __str__(self):
-        return str(self._board)
-    def car_at_position(self, pos_x, pos_y):
-        return self._board.car_at_position(pos_x, pos_y)
-    def is_victory(self):
-        return self._board.is_victory()
+    def __getattr__(self, name):
+        return getattr(self._board, name)
     def move(self, car, direction, count):
-        # This is overkill, we do not need to clone everything, just the
-        # important parts.
         clone = self._board.copy()
         clone.move(car, direction, count)
         return ImmutableBoard(clone)
-    def get_state(self):
-        return self._board.get_state()
 
 
 def solve(board):
