@@ -27,6 +27,20 @@ rr....
     ])
 
 
+def test_solve_solves_solved_board():
+    board = board_from_string("""\
+......
+......
+....rr
+......
+......
+......
+""")
+
+    eq_(solve(board), [
+    ])
+
+
 def test_first_level():
     board = board_from_string("""\
 .....A
